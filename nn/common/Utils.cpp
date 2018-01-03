@@ -17,6 +17,8 @@
 #define LOG_TAG "Utils"
 
 #include "Utils.h"
+
+#ifndef EMSCRIPTEN
 #include "NeuralNetworks.h"
 
 #include <android-base/logging.h>
@@ -26,10 +28,12 @@
 #include <unordered_map>
 
 using ::android::hidl::allocator::V1_0::IAllocator;
+#endif
 
 namespace android {
 namespace nn {
 
+#ifndef EMSCRIPTEN
 const char kVLogPropKey[] = "debug.nn.vlog";
 int vLogMask = ~0;
 
@@ -77,6 +81,7 @@ void initVLogMask() {
         }
     }
 }
+#endif
 
 #define COUNT(X) (sizeof(X) / sizeof(X[0]))
 
@@ -215,6 +220,7 @@ uint32_t sizeOfData(OperandType type, const std::vector<uint32_t>& dimensions) {
     return size;
 }
 
+#ifndef EMSCRIPTEN
 hidl_memory allocateSharedMemory(int64_t size) {
     hidl_memory memory;
 
@@ -231,6 +237,7 @@ hidl_memory allocateSharedMemory(int64_t size) {
 
     return memory;
 }
+#endif
 
 uint32_t alignBytesNeeded(uint32_t index, size_t length) {
     uint32_t pattern;
@@ -245,6 +252,7 @@ uint32_t alignBytesNeeded(uint32_t index, size_t length) {
     return extra;
 }
 
+#ifndef EMSCRIPTEN
 void logModelToInfo(const Model& model) {
     LOG(INFO) << "Model start";
     LOG(INFO) << "operands" << toString(model.operands);
@@ -443,6 +451,7 @@ bool validateRequest(const Request& request, const Model& model) {
             validRequestArguments(request.outputs, model.outputIndexes, model.operands, poolCount,
                                   "output"));
 }
+#endif
 
 #ifdef NN_DEBUGGABLE
 uint32_t getProp(const char* str, uint32_t defaultValue) {

@@ -17,7 +17,13 @@
 #ifndef ANDROID_ML_NN_ACTIVATION_FUNCTOR_H
 #define ANDROID_ML_NN_ACTIVATION_FUNCTOR_H
 
+#ifndef EMSCRIPTEN
 #include "android/log.h"
+#else
+#include <stdio.h>
+#define ANDROID_LOG_ERROR
+#define __android_log_print(PRIORITY, MODULE, fmt, ...) printf(PRIORITY MODULE fmt, ##__VA_ARGS__)
+#endif
 
 #include <algorithm>
 #include <cmath>

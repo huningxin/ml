@@ -18,7 +18,10 @@
 
 #include "OperationsUtils.h"
 #include "Operations.h"
+
+#ifndef EMSCRIPTEN
 #include "Utils.h"
+#endif
 
 #include <cmath>
 
