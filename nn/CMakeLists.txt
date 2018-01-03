@@ -27,3 +27,21 @@ add_executable(nn ${SOURCES})
 set_property(TARGET nn PROPERTY CXX_STANDARD 11)
 set_target_properties(nn PROPERTIES LINK_FLAGS "-s WASM=1 --memory-init-file 0 --bind")
 
+set(test_files "")
+set(test_dir ${CMAKE_CURRENT_SOURCE_DIR}/bind/test)
+file(GLOB_RECURSE files RELATIVE "${test_dir}" "${test_dir}/*")
+foreach(f ${files})
+  message(STATUS "copy ${test_dir}/${f} ${CMAKE_CURRENT_BINARY_DIR}/${f}")
+  add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${f}"
+                     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${test_dir}/${f}" "${CMAKE_CURRENT_BINARY_DIR}/${f}"
+                     DEPENDS "${test_dir}/${f}"
+                     COMMENT "Copying ${f}"
+                    )
+  list(APPEND test_files "${test_dir}/${f}" "${CMAKE_CURRENT_BINARY_DIR}/${f}")
+endforeach()
+
+message(STATUS "${test_files}")
+
+add_custom_target(nn_all ALL
+                  DEPENDS nn ${test_files})
+

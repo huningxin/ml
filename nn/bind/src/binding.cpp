@@ -7,13 +7,12 @@ using namespace emscripten;
 using namespace android::nn;
 
 namespace binding_utils {
-  Shape* createShape(OperandType type, val js_dims, float scale, int32_t offset) {
-    Shape* shape = new Shape;
-    shape->type = type;
-    shape->dimensions = vecFromJSArray<uint32_t>(js_dims);
-    shape->scale = scale;
-    shape->offset = offset;
-    return shape;
+  int32_t getShapeType(const Shape& shape) {
+    return (int32_t)shape.type;
+  }
+
+  void setShapeType(Shape& shape, int32_t type) {
+    shape.type = (OperandType)type;
   }
 
   val getShapeDimensions(const Shape& shape) {
@@ -23,35 +22,39 @@ namespace binding_utils {
     }
     return js_dims;
   }
+
+  void setShapeDimensions(Shape& shape, val js_dims) {
+    shape.dimensions = vecFromJSArray<uint32_t>(js_dims);
+  }
+
+  bool addFloat32Wrapper(intptr_t in1, const Shape& shape1, intptr_t in2, const Shape& shape2, int32_t activation, intptr_t out, const Shape& shapeOut) {
+    return addFloat32((const float*)in1, shape1, (const float*)in2, shape2, activation, (float*)out, shapeOut);
+  }
 }
 
 EMSCRIPTEN_BINDINGS(nn)
 {
-  enum_<FusedActivationFunc>("FusedActivationFunc")
-    .value("NONE", FusedActivationFunc::NONE)
-    .value("RELU", FusedActivationFunc::RELU)
-    .value("RELU1", FusedActivationFunc::RELU1)
-    .value("RELU6", FusedActivationFunc::RELU6)
-    ;
+  constant("NONE", (int32_t)FusedActivationFunc::NONE);
+  constant("RELU", (int32_t)FusedActivationFunc::RELU);
+  constant("RELU1", (int32_t)FusedActivationFunc::RELU1);
+  constant("RELU6", (int32_t)FusedActivationFunc::RELU6);
 
-  enum_<OperandType>("OperandType")
-    .value("FLOAT32", OperandType::FLOAT32)
-    .value("INT32", OperandType::INT32)
-    .value("UINT32", OperandType::UINT32)
-    .value("TENSOR_FLOAT32", OperandType::TENSOR_FLOAT32)
-    .value("TENSOR_INT32", OperandType::TENSOR_INT32)
-    .value("TENSOR_QUANT8_ASYMM", OperandType::TENSOR_QUANT8_ASYMM)
-    ;
+  constant("FLOAT32", (int32_t)OperandType::FLOAT32);
+  constant("INT32", (int32_t)OperandType::INT32);
+  constant("UINT32", (int32_t)OperandType::UINT32);
+  constant("TENSOR_FLOAT32", (int32_t)OperandType::TENSOR_FLOAT32);
+  constant("TENSOR_INT32", (int32_t)OperandType::TENSOR_INT32);
+  constant("TENSOR_QUANT8_ASYMM", (int32_t)OperandType::TENSOR_QUANT8_ASYMM);
 
   class_<Shape>("Shape")
-    .constructor(&binding_utils::createShape, allow_raw_pointers())
-    .property("type", &Shape::type)
-    .property("dimensions", &binding_utils::getShapeDimensions)
+    .constructor<>()
+    .property("type", &binding_utils::getShapeType, &binding_utils::setShapeType)
+    .property("dimensions", &binding_utils::getShapeDimensions, &binding_utils::setShapeDimensions)
     .property("scale", &Shape::scale)
     .property("offset", &Shape::offset)
     ;
 
-  function("addFloat32", &addFloat32, allow_raw_pointers());
+  function("addFloat32", &binding_utils::addFloat32Wrapper, allow_raw_pointers());
   function("addQuant8", &addQuant8, allow_raw_pointers());
   function("mulFloat32", &mulFloat32, allow_raw_pointers());
   function("mulQuant8", &mulQuant8, allow_raw_pointers());
