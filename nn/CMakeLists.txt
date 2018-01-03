@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.9)
-project(nn)
+project(nn_ops)
 set(CMAKE_BUILD_TYPE Release)
 
 include_directories(
@@ -23,9 +23,9 @@ set(SOURCES
     common/OperationsUtils.cpp
     common/Utils.cpp)
 
-add_executable(nn ${SOURCES})
-set_property(TARGET nn PROPERTY CXX_STANDARD 11)
-set_target_properties(nn PROPERTIES LINK_FLAGS "-s WASM=1 --memory-init-file 0 --bind")
+add_executable(nn_ops ${SOURCES})
+set_property(TARGET nn_ops PROPERTY CXX_STANDARD 11)
+set_target_properties(nn_ops PROPERTIES LINK_FLAGS "-s WASM=1 --memory-init-file 0 --bind")
 
 set(test_files "")
 set(test_dir ${CMAKE_CURRENT_SOURCE_DIR}/bind/test)
@@ -42,6 +42,6 @@ endforeach()
 
 message(STATUS "${test_files}")
 
-add_custom_target(nn_all ALL
-                  DEPENDS nn ${test_files})
+add_custom_target(nn_ops_test ALL
+                  DEPENDS nn_ops ${test_files})
 
