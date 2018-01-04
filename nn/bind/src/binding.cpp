@@ -193,31 +193,35 @@ EMSCRIPTEN_BINDINGS(nn)
   function("depthwiseConvQuant8", &binding_utils::depthwiseConvQuant8Wrapper, allow_raw_pointers());
   function("convFloat32", &binding_utils::convFloat32Wrapper, allow_raw_pointers());
   function("convQuant8", &binding_utils::convQuant8Wrapper, allow_raw_pointers());
-  function("averagePoolFloat32", &averagePoolFloat32, allow_raw_pointers());
-  function("averagePoolQuant8", &averagePoolQuant8, allow_raw_pointers());
-  function("l2PoolFloat32", &l2PoolFloat32, allow_raw_pointers());
-  function("maxPoolFloat32", &maxPoolFloat32, allow_raw_pointers());
-  function("maxPoolQuant8", &maxPoolQuant8, allow_raw_pointers());
-  function("reluFloat32", &reluFloat32, allow_raw_pointers());
-  function("relu1Float32", &relu1Float32, allow_raw_pointers());
-  function("relu6Float32", &relu6Float32, allow_raw_pointers());
-  function("tanhFloat32", &tanhFloat32, allow_raw_pointers());
-  function("logisticFloat32", &logisticFloat32, allow_raw_pointers());
-  function("softmaxFloat32", &softmaxFloat32, allow_raw_pointers());
-  function("reluQuant8", &reluQuant8, allow_raw_pointers());
-  function("relu1Quant8", &relu1Quant8, allow_raw_pointers());
-  function("relu6Quant8", &relu6Quant8, allow_raw_pointers());
-  function("logisticQuant8", &logisticQuant8, allow_raw_pointers());
-  function("softmaxQuant8", &softmaxQuant8, allow_raw_pointers());
-  function("fullyConnectedFloat32", &fullyConnectedFloat32, allow_raw_pointers());
-  function("fullyConnectedQuant8", &fullyConnectedQuant8, allow_raw_pointers());
-  function("concatenationFloat32", &concatenationFloat32, allow_raw_pointers());
-  function("concatenationQuant8", &concatenationQuant8, allow_raw_pointers());
-  function("l2normFloat32", &l2normFloat32, allow_raw_pointers());
-  function("l2normQuant8", &l2normQuant8, allow_raw_pointers());
-  function("localResponseNormFloat32", &localResponseNormFloat32, allow_raw_pointers());
-  function("reshapeGeneric", &reshapeGeneric, allow_raw_pointers());
-  function("resizeBilinearFloat32", &resizeBilinearFloat32, allow_raw_pointers());
-  function("depthToSpaceGeneric", &depthToSpaceGeneric, allow_raw_pointers());
-  function("spaceToDepthGeneric", &spaceToDepthGeneric, allow_raw_pointers());
+
+  // TODO: operation wrappers
+  /*
+  function("averagePoolFloat32", &binding_utils::averagePoolFloat32Wrapper, allow_raw_pointers());
+  function("averagePoolQuant8", &binding_utils::averagePoolQuant8Wrapper, allow_raw_pointers());
+  function("l2PoolFloat32", &binding_utils::l2PoolFloat32Wrapper, allow_raw_pointers());
+  function("maxPoolFloat32", &binding_utils::maxPoolFloat32Wrapper, allow_raw_pointers());
+  function("maxPoolQuant8", &binding_utils::maxPoolQuant8Wrapper, allow_raw_pointers());
+  function("reluFloat32", &binding_utils::reluFloat32Wrapper, allow_raw_pointers());
+  function("relu1Float32", &binding_utils::relu1Float32Wrapper, allow_raw_pointers());
+  function("relu6Float32", &binding_utils::relu6Float32Wrapper, allow_raw_pointers());
+  function("tanhFloat32", &binding_utils::tanhFloat32Wrapper, allow_raw_pointers());
+  function("logisticFloat32", &binding_utils::logisticFloat32Wrapper, allow_raw_pointers());
+  function("softmaxFloat32", &binding_utils::softmaxFloat32Wrapper, allow_raw_pointers());
+  function("reluQuant8", &binding_utils::reluQuant8Wrapper, allow_raw_pointers());
+  function("relu1Quant8", &binding_utils::relu1Quant8Wrapper, allow_raw_pointers());
+  function("relu6Quant8", &binding_utils::relu6Quant8Wrapper, allow_raw_pointers());
+  function("logisticQuant8", &binding_utils::logisticQuant8Wrapper, allow_raw_pointers());
+  function("softmaxQuant8", &binding_utils::softmaxQuant8Wrapper, allow_raw_pointers());
+  function("fullyConnectedFloat32", &binding_utils::fullyConnectedFloat32Wrapper, allow_raw_pointers());
+  function("fullyConnectedQuant8", &binding_utils::fullyConnectedQuant8Wrapper, allow_raw_pointers());
+  function("concatenationFloat32", &binding_utils::concatenationFloat32Wrapper, allow_raw_pointers());
+  function("concatenationQuant8", &binding_utils::concatenationQuant8Wrapper, allow_raw_pointers());
+  function("l2normFloat32", &binding_utils::l2normFloat32Wrapper, allow_raw_pointers());
+  function("l2normQuant8", &binding_utils::l2normQuant8Wrapper, allow_raw_pointers());
+  function("localResponseNormFloat32", &binding_utils::localResponseNormFloat32Wrapper, allow_raw_pointers());
+  function("reshapeGeneric", &binding_utils::reshapeGenericWrapper, allow_raw_pointers());
+  function("resizeBilinearFloat32", &binding_utils::resizeBilinearFloat32Wrapper, allow_raw_pointers());
+  function("depthToSpaceGeneric", &binding_utils::depthToSpaceGenericWrapper, allow_raw_pointers());
+  function("spaceToDepthGeneric", &binding_utils::spaceToDepthGenericWrapper, allow_raw_pointers());
+  */
 }
