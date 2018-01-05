@@ -1,3 +1,6 @@
 [submodule "nn/external/eigen"]
 	path = nn/external/eigen
 	url = https://android.googlesource.com/platform/external/eigen
+[submodule "nn/external/gemmlowp"]
+	path = nn/external/gemmlowp
+	url = https://android.googlesource.com/platform/external/gemmlowp
