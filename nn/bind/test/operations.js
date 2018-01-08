@@ -24,8 +24,7 @@ describe('Operations Test', function() {
     tensor1Data.fill(value1);
     let tensor1ByteLength = tensor1Data.length * tensor1Data.BYTES_PER_ELEMENT;
     let tensor1 = Module._malloc(tensor1ByteLength);
-    let heap = new Uint8Array(Module.HEAPU8.buffer, tensor1, tensor1ByteLength);
-    heap.set( new Uint8Array(tensor1Data.buffer) );
+    Module.HEAPF32.set(tensor1Data, tensor1 >> 2);
     
     let shape2 = new Module.Shape;
     shape2.type = Module.TENSOR_FLOAT32;
@@ -34,8 +33,7 @@ describe('Operations Test', function() {
     tensor2Data.fill(value2);
     let tensor2ByteLength = tensor2Data.length * tensor2Data.BYTES_PER_ELEMENT;
     let tensor2 = Module._malloc(tensor2ByteLength);
-    heap = new Uint8Array(Module.HEAPU8.buffer, tensor2, tensor2ByteLength);
-    heap.set( new Uint8Array(tensor2Data.buffer) );
+    Module.HEAPF32.set(tensor2Data, tensor2 >> 2);
 
     let shape3 = new Module.Shape;
     shape3.type = Module.TENSOR_FLOAT32;
@@ -44,9 +42,8 @@ describe('Operations Test', function() {
     assert.isTrue(Module.addMulPrepare(shape1, shape2, shape3));
     assert.deepEqual(shape3.dimensions, dims);
 
-    let tensor3Data = new Float32Array(product(shape3.dimensions));
-    tensor3Data.fill(0);
-    let tensor3ByteLength = tensor3Data.length * tensor3Data.BYTES_PER_ELEMENT;
+    let tensor3Length = product(shape3.dimensions);
+    let tensor3ByteLength = tensor3Length * Float32Array.BYTES_PER_ELEMENT;
     let tensor3 = Module._malloc(tensor3ByteLength);
 
     let start = performance.now();
@@ -54,11 +51,13 @@ describe('Operations Test', function() {
     let end = performance.now();
     console.log(`addFloat32 elapsed time: ${end - start} ms`);
 
-    heap = new Uint8Array(Module.HEAPU8.buffer, tensor3, tensor3ByteLength);
-    tensor3Buffer = new Uint8Array(tensor3Data.buffer);
-    tensor3Buffer.set(heap);
+    let tensor3Data = new Float32Array(Module.HEAP8.buffer, tensor3, tensor3Length);
 
     for (let i = 0; i < 10; ++i) {
+      assert.isTrue(almostEqual(tensor3Data[i], tensor1Data[i] + tensor2Data[i]));
+    }
+
+    for (let i = tensor3Data.length - 10; i < tensor3Data.length; ++i) {
       assert.isTrue(almostEqual(tensor3Data[i], tensor1Data[i] + tensor2Data[i]));
     }
 
@@ -82,8 +81,7 @@ describe('Operations Test', function() {
     tensor1Data.fill(value1);
     let tensor1ByteLength = tensor1Data.length * tensor1Data.BYTES_PER_ELEMENT;
     let tensor1 = Module._malloc(tensor1ByteLength);
-    let heap = new Uint8Array(Module.HEAPU8.buffer, tensor1, tensor1ByteLength);
-    heap.set( new Uint8Array(tensor1Data.buffer) );
+    Module.HEAPF32.set(tensor1Data, tensor1 >> 2);
     
     let shape2 = new Module.Shape;
     shape2.type = Module.TENSOR_FLOAT32;
@@ -92,8 +90,7 @@ describe('Operations Test', function() {
     tensor2Data.fill(value2);
     let tensor2ByteLength = tensor2Data.length * tensor2Data.BYTES_PER_ELEMENT;
     let tensor2 = Module._malloc(tensor2ByteLength);
-    heap = new Uint8Array(Module.HEAPU8.buffer, tensor2, tensor2ByteLength);
-    heap.set( new Uint8Array(tensor2Data.buffer) );
+    Module.HEAPF32.set(tensor2Data, tensor2 >> 2);
 
     let shape3 = new Module.Shape;
     shape3.type = Module.TENSOR_FLOAT32;
@@ -102,9 +99,8 @@ describe('Operations Test', function() {
     assert.isTrue(Module.addMulPrepare(shape1, shape2, shape3));
     assert.deepEqual(shape3.dimensions, dims);
 
-    let tensor3Data = new Float32Array(product(shape3.dimensions));
-    tensor3Data.fill(0);
-    let tensor3ByteLength = tensor3Data.length * tensor3Data.BYTES_PER_ELEMENT;
+    let tensor3Length = product(shape3.dimensions);
+    let tensor3ByteLength = tensor3Length * Float32Array.BYTES_PER_ELEMENT;
     let tensor3 = Module._malloc(tensor3ByteLength);
 
     let start = performance.now();
@@ -112,11 +108,13 @@ describe('Operations Test', function() {
     let end = performance.now();
     console.log(`mulFloat32 elapsed time: ${end - start} ms`);
 
-    heap = new Uint8Array(Module.HEAPU8.buffer, tensor3, tensor3ByteLength);
-    tensor3Buffer = new Uint8Array(tensor3Data.buffer);
-    tensor3Buffer.set(heap);
+    let tensor3Data = new Float32Array(Module.HEAP8.buffer, tensor3, tensor3Length);
 
     for (let i = 0; i < 10; ++i) {
+      assert.isTrue(almostEqual(tensor3Data[i], tensor1Data[i] * tensor2Data[i]));
+    }
+
+    for (let i = tensor3Data.length - 10; i < tensor3Data.length; ++i) {
       assert.isTrue(almostEqual(tensor3Data[i], tensor1Data[i] * tensor2Data[i]));
     }
 
@@ -165,22 +163,19 @@ describe('Operations Test', function() {
     randomFill(inputData);
     let inputDataByteLength = inputData.length * inputData.BYTES_PER_ELEMENT;
     let input = Module._malloc(inputDataByteLength);
-    let heap = new Uint8Array(Module.HEAPU8.buffer, input, inputDataByteLength);
-    heap.set( new Uint8Array(inputData.buffer) );
+    Module.HEAPF32.set(inputData, input >> 2);
 
     let filterData = new Float32Array(product(filterShape.dimensions));
     randomFill(filterData);
     let filterDataByteLength = filterData.length * filterData.BYTES_PER_ELEMENT;
     let filter = Module._malloc(filterDataByteLength);
-    heap = new Uint8Array(Module.HEAPU8.buffer, filter, filterDataByteLength);
-    heap.set( new Uint8Array(filterData.buffer) );
+    Module.HEAPF32.set(filterData, filter >> 2);
 
     let biasData = new Float32Array(product(biasShape.dimensions));
     randomFill(biasData);
     let biasDataByteLength = biasData.length * biasData.BYTES_PER_ELEMENT;
     let bias = Module._malloc(biasDataByteLength);
-    heap = new Uint8Array(Module.HEAPU8.buffer, bias, biasDataByteLength);
-    heap.set( new Uint8Array(biasData.buffer) );
+    Module.HEAPF32.set(biasData, bias >> 2);
 
     let output = Module._malloc(product(outputShape.dimensions)*Float32Array.BYTES_PER_ELEMENT);
 
