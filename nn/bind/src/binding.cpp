@@ -52,6 +52,25 @@ namespace binding_utils {
     return convPrepare(input, filter, bias, padding_left, padding_right, padding_top, padding_bottom, stride_width, stride_height, &output);
   }
 
+  bool genericPoolingPrepareWrapper(const Shape& input,
+                                    int32_t padding_left, int32_t padding_right,
+                                    int32_t padding_top, int32_t padding_bottom,
+                                    int32_t stride_width, int32_t stride_height,
+                                    int32_t filter_width, int32_t filter_height,
+                                    Shape& output) {
+    return genericPoolingPrepare(input, padding_left, padding_right, padding_top, padding_bottom,
+                                 stride_width, stride_height, filter_width, filter_height, &output);
+  }
+
+  bool genericActivationPrepareWrapper(const Shape& input, Shape& output) {
+    return genericActivationPrepare(input, &output);
+  }
+
+  bool reshapePrepareWrapper(const Shape& input, const intptr_t targetDims, const int32_t targetDimsSize, Shape& output) {
+    return reshapePrepare(input, (const int32_t*)targetDims, targetDimsSize, &output);
+  }
+
+
   // Operation wrappers.
   bool addFloat32Wrapper(const intptr_t in1, const Shape& shape1,
                          const intptr_t in2, const Shape& shape2,
@@ -135,6 +154,7 @@ namespace binding_utils {
                        stride_width,  stride_height, activation,
                        (float*)outputData, outputShape);
   }
+
   bool convQuant8Wrapper(const intptr_t inputData, const Shape& inputShape,
                          const intptr_t filterData, const Shape& filterShape,
                          const intptr_t biasData, const Shape& biasShape,
@@ -150,6 +170,56 @@ namespace binding_utils {
                       padding_top, padding_bottom,
                       stride_width, stride_height, activation,
                       (uint8_t*)outputData, outputShape);
+  }
+
+  bool averagePoolFloat32Wrapper(const intptr_t inputData, const Shape& inputShape,
+                                 int32_t padding_left, int32_t padding_right,
+                                 int32_t padding_top, int32_t padding_bottom,
+                                 int32_t stride_width, int32_t stride_height,
+                                 int32_t filter_width, int32_t filter_height, int32_t activation,
+                                 intptr_t outputData, const Shape& outputShape) {
+    return averagePoolFloat32((const float*)inputData, inputShape,
+                              padding_left, padding_right,
+                              padding_top, padding_bottom,
+                              stride_width, stride_height,
+                              filter_width, filter_height, activation,
+                              (float*)outputData, outputShape);
+  }
+
+  bool averagePoolQuant8Wrapper(const intptr_t inputData, const Shape& inputShape,
+                                 int32_t padding_left, int32_t padding_right,
+                                 int32_t padding_top, int32_t padding_bottom,
+                                 int32_t stride_width, int32_t stride_height,
+                                 int32_t filter_width, int32_t filter_height, int32_t activation,
+                                 intptr_t outputData, const Shape& outputShape) {
+    return averagePoolQuant8((const uint8_t*)inputData, inputShape,
+                             padding_left, padding_right,
+                             padding_top, padding_bottom,
+                             stride_width, stride_height,
+                             filter_width, filter_height, activation,
+                             (uint8_t*)outputData, outputShape);
+  }
+
+  bool softmaxFloat32Wrapper(const intptr_t inputData, const Shape& inputShape,
+                             const float beta,
+                             intptr_t outputData, const Shape& outputShape) {
+    return softmaxFloat32((const float*)inputData, inputShape,
+                          beta,
+                          (float*)outputData, outputShape);
+  }
+
+  bool softmaxQuant8Wrapper(const intptr_t inputData, const Shape& inputShape,
+                             const float beta,
+                             intptr_t outputData, const Shape& outputShape) {
+    return softmaxQuant8((const uint8_t*)inputData, inputShape,
+                          beta,
+                          (uint8_t*)outputData, outputShape);
+  }
+
+  bool reshapeGenericWrapper(const intptr_t inputData, const Shape& inputShape,
+                             intptr_t outputData, const Shape& outputShape) {
+    return reshapeGeneric((const void*)inputData, inputShape,
+                          (void*)outputData, outputShape);
   }
 }
 
@@ -181,6 +251,9 @@ EMSCRIPTEN_BINDINGS(nn)
   function("dequantizePrepare", &binding_utils::dequantizePrepareWrapper);
   function("depthwiseConvPrepare", &binding_utils::depthwiseConvPrepareWrapper);
   function("convPrepare", &binding_utils::convPrepareWrapper);
+  function("genericPoolingPrepare", &binding_utils::genericPoolingPrepareWrapper);
+  function("genericActivationPrepare", &binding_utils::genericActivationPrepareWrapper);
+  function("reshapePrepare", &binding_utils::reshapePrepareWrapper);
 
   // Operations.
   function("addFloat32", &binding_utils::addFloat32Wrapper, allow_raw_pointers());
@@ -193,11 +266,14 @@ EMSCRIPTEN_BINDINGS(nn)
   function("depthwiseConvQuant8", &binding_utils::depthwiseConvQuant8Wrapper, allow_raw_pointers());
   function("convFloat32", &binding_utils::convFloat32Wrapper, allow_raw_pointers());
   function("convQuant8", &binding_utils::convQuant8Wrapper, allow_raw_pointers());
+  function("averagePoolFloat32", &binding_utils::averagePoolFloat32Wrapper, allow_raw_pointers());
+  function("averagePoolQuant8", &binding_utils::averagePoolQuant8Wrapper, allow_raw_pointers());
+  function("softmaxFloat32", &binding_utils::softmaxFloat32Wrapper, allow_raw_pointers());
+  function("softmaxQuant8", &binding_utils::softmaxQuant8Wrapper, allow_raw_pointers());
+  function("reshapeGeneric", &binding_utils::reshapeGenericWrapper, allow_raw_pointers());
 
   // TODO: operation wrappers
   /*
-  function("averagePoolFloat32", &binding_utils::averagePoolFloat32Wrapper, allow_raw_pointers());
-  function("averagePoolQuant8", &binding_utils::averagePoolQuant8Wrapper, allow_raw_pointers());
   function("l2PoolFloat32", &binding_utils::l2PoolFloat32Wrapper, allow_raw_pointers());
   function("maxPoolFloat32", &binding_utils::maxPoolFloat32Wrapper, allow_raw_pointers());
   function("maxPoolQuant8", &binding_utils::maxPoolQuant8Wrapper, allow_raw_pointers());
@@ -206,12 +282,10 @@ EMSCRIPTEN_BINDINGS(nn)
   function("relu6Float32", &binding_utils::relu6Float32Wrapper, allow_raw_pointers());
   function("tanhFloat32", &binding_utils::tanhFloat32Wrapper, allow_raw_pointers());
   function("logisticFloat32", &binding_utils::logisticFloat32Wrapper, allow_raw_pointers());
-  function("softmaxFloat32", &binding_utils::softmaxFloat32Wrapper, allow_raw_pointers());
   function("reluQuant8", &binding_utils::reluQuant8Wrapper, allow_raw_pointers());
   function("relu1Quant8", &binding_utils::relu1Quant8Wrapper, allow_raw_pointers());
   function("relu6Quant8", &binding_utils::relu6Quant8Wrapper, allow_raw_pointers());
   function("logisticQuant8", &binding_utils::logisticQuant8Wrapper, allow_raw_pointers());
-  function("softmaxQuant8", &binding_utils::softmaxQuant8Wrapper, allow_raw_pointers());
   function("fullyConnectedFloat32", &binding_utils::fullyConnectedFloat32Wrapper, allow_raw_pointers());
   function("fullyConnectedQuant8", &binding_utils::fullyConnectedQuant8Wrapper, allow_raw_pointers());
   function("concatenationFloat32", &binding_utils::concatenationFloat32Wrapper, allow_raw_pointers());
@@ -219,7 +293,6 @@ EMSCRIPTEN_BINDINGS(nn)
   function("l2normFloat32", &binding_utils::l2normFloat32Wrapper, allow_raw_pointers());
   function("l2normQuant8", &binding_utils::l2normQuant8Wrapper, allow_raw_pointers());
   function("localResponseNormFloat32", &binding_utils::localResponseNormFloat32Wrapper, allow_raw_pointers());
-  function("reshapeGeneric", &binding_utils::reshapeGenericWrapper, allow_raw_pointers());
   function("resizeBilinearFloat32", &binding_utils::resizeBilinearFloat32Wrapper, allow_raw_pointers());
   function("depthToSpaceGeneric", &binding_utils::depthToSpaceGenericWrapper, allow_raw_pointers());
   function("spaceToDepthGeneric", &binding_utils::spaceToDepthGenericWrapper, allow_raw_pointers());
