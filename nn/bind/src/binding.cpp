@@ -257,19 +257,19 @@ EMSCRIPTEN_BINDINGS(nn)
 
   // Operations.
   function("addFloat32", &binding_utils::addFloat32Wrapper, allow_raw_pointers());
-  function("addQuant8", &binding_utils::addQuant8Wrapper, allow_raw_pointers());
+  //function("addQuant8", &binding_utils::addQuant8Wrapper, allow_raw_pointers());
   function("mulFloat32", &binding_utils::mulFloat32Wrapper, allow_raw_pointers());
-  function("mulQuant8", &binding_utils::mulQuant8Wrapper, allow_raw_pointers());
+  //function("mulQuant8", &binding_utils::mulQuant8Wrapper, allow_raw_pointers());
   function("floorFloat32", &binding_utils::floorFloat32Wrapper, allow_raw_pointers());
-  function("dequantizeQuant8ToFloat32", &binding_utils::dequantizeQuant8ToFloat32Wrapper, allow_raw_pointers());
+  //function("dequantizeQuant8ToFloat32", &binding_utils::dequantizeQuant8ToFloat32Wrapper, allow_raw_pointers());
   function("depthwiseConvFloat32", &binding_utils::depthwiseConvFloat32Wrapper, allow_raw_pointers());
-  function("depthwiseConvQuant8", &binding_utils::depthwiseConvQuant8Wrapper, allow_raw_pointers());
+  //function("depthwiseConvQuant8", &binding_utils::depthwiseConvQuant8Wrapper, allow_raw_pointers());
   function("convFloat32", &binding_utils::convFloat32Wrapper, allow_raw_pointers());
-  function("convQuant8", &binding_utils::convQuant8Wrapper, allow_raw_pointers());
+  //function("convQuant8", &binding_utils::convQuant8Wrapper, allow_raw_pointers());
   function("averagePoolFloat32", &binding_utils::averagePoolFloat32Wrapper, allow_raw_pointers());
-  function("averagePoolQuant8", &binding_utils::averagePoolQuant8Wrapper, allow_raw_pointers());
+  //function("averagePoolQuant8", &binding_utils::averagePoolQuant8Wrapper, allow_raw_pointers());
   function("softmaxFloat32", &binding_utils::softmaxFloat32Wrapper, allow_raw_pointers());
-  function("softmaxQuant8", &binding_utils::softmaxQuant8Wrapper, allow_raw_pointers());
+  //function("softmaxQuant8", &binding_utils::softmaxQuant8Wrapper, allow_raw_pointers());
   function("reshapeGeneric", &binding_utils::reshapeGenericWrapper, allow_raw_pointers());
 
   // TODO: operation wrappers
