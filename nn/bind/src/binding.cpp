@@ -75,6 +75,12 @@ namespace binding_utils {
                             Shape& output) {
     return concatenationPrepare(inputShapes, axis, &output);
   }
+  bool fullyConnectedPrepareWrapper(const Shape& input,
+                                    const Shape& weights,
+                                    const Shape& bias,
+                                    Shape& output) {
+    return fullyConnectedPrepare(input, weights, bias, &output);
+  }
 
   // Operation wrappers.
   bool addFloat32Wrapper(const intptr_t in1, const Shape& shape1,
@@ -174,6 +180,18 @@ namespace binding_utils {
     return concatenationFloat32((const std::vector<const float*>&)inputDataPtrs, inputShapes,
                                 axis, (float*)outputData, outputShape);
   }
+
+  bool fullyConnectedFloat32Wrapper(const intptr_t inputData, const Shape& inputShape,
+                                    const intptr_t weightsData, const Shape& weightsShape,
+                                    const intptr_t biasData, const Shape& biasShape,
+                                    int32_t activation,
+                                    intptr_t outputData, const Shape& outputShape) {
+    return fullyConnectedFloat32((const float*) inputData, inputShape,
+                                 (const float*) weightsData, weightsShape,
+                                 (const float*) biasData, biasShape,
+                                 activation,
+                                 (float*) outputData, outputShape);
+  }
 }
 
 EMSCRIPTEN_BINDINGS(nn)
@@ -211,6 +229,7 @@ EMSCRIPTEN_BINDINGS(nn)
   function("genericActivationPrepare", &binding_utils::genericActivationPrepareWrapper);
   function("reshapePrepare", &binding_utils::reshapePrepareWrapper);
   function("concatenationPrepare", &binding_utils::concatenationPrepareWrapper);
+  function("fullyConnectedPrepare", &binding_utils::fullyConnectedPrepareWrapper);
 
   // Operations.
   function("addFloat32", &binding_utils::addFloat32Wrapper, allow_raw_pointers());
@@ -223,6 +242,7 @@ EMSCRIPTEN_BINDINGS(nn)
   function("reshapeGeneric", &binding_utils::reshapeGenericWrapper, allow_raw_pointers());
   function("maxPoolFloat32", &binding_utils::maxPoolFloat32Wrapper, allow_raw_pointers());
   function("concatenationFloat32", &binding_utils::concatenationFloat32Wrapper, allow_raw_pointers());
+  function("fullyConnectedFloat32", &binding_utils::fullyConnectedFloat32Wrapper, allow_raw_pointers());
 
   // TODO: operation wrappers
   /*
@@ -237,7 +257,6 @@ EMSCRIPTEN_BINDINGS(nn)
   function("relu1Quant8", &binding_utils::relu1Quant8Wrapper, allow_raw_pointers());
   function("relu6Quant8", &binding_utils::relu6Quant8Wrapper, allow_raw_pointers());
   function("logisticQuant8", &binding_utils::logisticQuant8Wrapper, allow_raw_pointers());
-  function("fullyConnectedFloat32", &binding_utils::fullyConnectedFloat32Wrapper, allow_raw_pointers());
   function("fullyConnectedQuant8", &binding_utils::fullyConnectedQuant8Wrapper, allow_raw_pointers());
   function("concatenationQuant8", &binding_utils::concatenationQuant8Wrapper, allow_raw_pointers());
   function("l2normFloat32", &binding_utils::l2normFloat32Wrapper, allow_raw_pointers());
