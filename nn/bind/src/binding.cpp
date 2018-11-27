@@ -81,6 +81,12 @@ namespace binding_utils {
                                     Shape& output) {
     return fullyConnectedPrepare(input, weights, bias, &output);
   }
+  bool resizeBilinearPrepareWrapper(const Shape& input,
+                                    int32_t height,
+                                    int32_t width,
+                                    Shape& output) {
+    return resizeBilinearPrepare(input, height, width, &output);
+  }
 
   // Operation wrappers.
   bool addFloat32Wrapper(const intptr_t in1, const Shape& shape1,
@@ -192,6 +198,12 @@ namespace binding_utils {
                                  activation,
                                  (float*) outputData, outputShape);
   }
+
+  bool resizeBilinearFloat32Wrapper(const intptr_t inputData, const Shape& inputShape,
+                                    intptr_t outputData, const Shape& outputShape) {
+    return resizeBilinearFloat32((const float*) inputData, inputShape,
+                                 (float*) outputData, outputShape);
+  }
 }
 
 EMSCRIPTEN_BINDINGS(nn)
@@ -230,6 +242,7 @@ EMSCRIPTEN_BINDINGS(nn)
   function("reshapePrepare", &binding_utils::reshapePrepareWrapper);
   function("concatenationPrepare", &binding_utils::concatenationPrepareWrapper);
   function("fullyConnectedPrepare", &binding_utils::fullyConnectedPrepareWrapper);
+  function("resizeBilinearPrepare", &binding_utils::resizeBilinearPrepareWrapper);
 
   // Operations.
   function("addFloat32", &binding_utils::addFloat32Wrapper, allow_raw_pointers());
@@ -243,6 +256,7 @@ EMSCRIPTEN_BINDINGS(nn)
   function("maxPoolFloat32", &binding_utils::maxPoolFloat32Wrapper, allow_raw_pointers());
   function("concatenationFloat32", &binding_utils::concatenationFloat32Wrapper, allow_raw_pointers());
   function("fullyConnectedFloat32", &binding_utils::fullyConnectedFloat32Wrapper, allow_raw_pointers());
+  function("resizeBilinearFloat32", &binding_utils::resizeBilinearFloat32Wrapper, allow_raw_pointers());
 
   // TODO: operation wrappers
   /*
@@ -262,7 +276,6 @@ EMSCRIPTEN_BINDINGS(nn)
   function("l2normFloat32", &binding_utils::l2normFloat32Wrapper, allow_raw_pointers());
   function("l2normQuant8", &binding_utils::l2normQuant8Wrapper, allow_raw_pointers());
   function("localResponseNormFloat32", &binding_utils::localResponseNormFloat32Wrapper, allow_raw_pointers());
-  function("resizeBilinearFloat32", &binding_utils::resizeBilinearFloat32Wrapper, allow_raw_pointers());
   function("depthToSpaceGeneric", &binding_utils::depthToSpaceGenericWrapper, allow_raw_pointers());
   function("spaceToDepthGeneric", &binding_utils::spaceToDepthGenericWrapper, allow_raw_pointers());
   */
