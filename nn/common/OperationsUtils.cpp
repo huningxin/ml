@@ -433,8 +433,8 @@ bool reshapePrepare(const Shape& input,
 }
 
 bool resizeBilinearPrepare(const Shape& input,
-                           int32_t width,
                            int32_t height,
+                           int32_t width,
                            Shape* output) {
     NN_OPS_CHECK(getNumberOfDimensions(input) == 4);
     uint32_t batches  = getSizeOfDimension(input, 0);
